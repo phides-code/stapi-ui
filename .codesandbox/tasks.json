@@ -16,7 +16,10 @@
         "dev backend": {
             "name": "dev backend",
             "command": "cd backend && npm run dev",
-            "runAtStart": true
+            "runAtStart": true,
+            "preview": {
+                "port": 8000
+            }
         },
         "dev frontend": {
             "name": "dev frontend",
