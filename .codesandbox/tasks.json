@@ -1,0 +1,27 @@
+{
+    // These tasks will run in order when initializing your CodeSandbox project.
+    "setupTasks": [
+        {
+            "name": "install backend",
+            "command": "cd backend && npm install"
+        },
+        {
+            "name": "install frontend",
+            "command": "cd frontend && npm install"
+        }
+    ],
+
+    // These tasks can be run from CodeSandbox. Running one will open a log in the app.
+    "tasks": {
+        "dev backend": {
+            "name": "dev backend",
+            "command": "cd backend && npm run dev",
+            "runAtStart": true
+        },
+        "dev frontend": {
+            "name": "dev frontend",
+            "command": "cd frontend && npm run dev",
+            "runAtStart": true
+        }
+    }
+}
