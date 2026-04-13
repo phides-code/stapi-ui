@@ -1,3 +1,5 @@
 node_modules/
 dist/
-stapi
+stapi.md
+post-data.json
+*.db
