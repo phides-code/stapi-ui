@@ -3,3 +3,4 @@ dist/
 stapi.md
 post-data.json
 *.db
+stapi-post.json

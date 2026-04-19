@@ -15,9 +15,9 @@ export const shipRepository = {
         const snake = mapToSnake(input);
 
         const stmt = db.prepare(`
-      INSERT INTO ships (ship_name)
-      VALUES (@ship_name)
-    `);
+            INSERT INTO ships (ship_name, registry, ship_class)
+            VALUES (@ship_name, @registry, @ship_class)
+        `);
 
         const result = stmt.run(snake);
 
