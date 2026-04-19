@@ -2,9 +2,11 @@ import { db } from '../sqlite';
 import { NewOrUpdatedShip } from '../types';
 import { Ship } from '../types';
 import { mapRowsToCamel, mapToSnake } from '../utils/case';
+import { formatLocalTimestamp } from '../utils/time';
 
 export const shipRepository = {
     getAll(): Ship[] {
+        console.log(`[${formatLocalTimestamp()}] Fetching all ships`);
         const rows = db
             .prepare<[], Record<string, any>>('SELECT * FROM ships')
             .all();
@@ -12,6 +14,9 @@ export const shipRepository = {
     },
 
     create(input: NewOrUpdatedShip): Ship {
+        console.log(
+            `[${formatLocalTimestamp()}] Creating ship: ${input.shipName}`,
+        );
         const snake = mapToSnake(input);
 
         const stmt = db.prepare(`

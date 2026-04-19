@@ -8,6 +8,7 @@ import {
     StApiResponse,
 } from './types';
 import { shipRepository } from './repo/ships.repository';
+import { formatLocalTimestamp } from './utils/time';
 
 const app = express();
 app.use(express.json());
@@ -61,10 +62,16 @@ app.post(
         req: Request<{}, {}, ShipSearchPayload>,
         res: Response<ResponseStructure>,
     ) => {
+        console.log(
+            `[${formatLocalTimestamp()}] POST /api/shipSearch request received`,
+        );
         const parsed = ShipSearchPayloadSchema.safeParse(req.body);
 
         if (!parsed.success) {
-            console.log('zod error:' + parsed.error);
+            console.error(
+                `[${formatLocalTimestamp()}] Validation error on /api/shipSearch:`,
+                parsed.error.issues,
+            );
 
             return res.status(400).json({
                 data: null,
@@ -80,7 +87,10 @@ app.post(
                 error: null,
             });
         } catch (err) {
-            console.log('shipSearch caught error:' + err);
+            console.error(
+                `[${formatLocalTimestamp()}] shipSearch failed:`,
+                err,
+            );
             return res.status(500).json({
                 data: null,
                 error: 'internal error: ' + err,
@@ -90,6 +100,7 @@ app.post(
 );
 
 app.get('/api/ships', (_: Request, res: Response<ResponseStructure>) => {
+    console.log(`[${formatLocalTimestamp()}] GET /api/ships request received`);
     const ships = shipRepository.getAll();
 
     res.status(200).json({
@@ -104,10 +115,16 @@ app.post(
         req: Request<{}, {}, NewOrUpdatedShip>,
         res: Response<ResponseStructure>,
     ) => {
+        console.log(
+            `[${formatLocalTimestamp()}] POST /api/ships request received`,
+        );
         const parsed = NewOrUpdatedShipSchema.safeParse(req.body);
 
         if (!parsed.success) {
-            console.log('zod error:' + parsed.error);
+            console.error(
+                `[${formatLocalTimestamp()}] Validation error on /api/ships:`,
+                parsed.error.issues,
+            );
 
             return res.status(400).json({
                 data: null,
@@ -123,7 +140,10 @@ app.post(
                 error: null,
             });
         } catch (err) {
-            console.log('error: ' + err);
+            console.error(
+                `[${formatLocalTimestamp()}] Failed to create ship:`,
+                err,
+            );
 
             return res
                 .status(500)
@@ -133,5 +153,7 @@ app.post(
 );
 
 app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+    console.log(
+        `[${formatLocalTimestamp()}] Server running at http://localhost:${PORT}`,
+    );
 });
