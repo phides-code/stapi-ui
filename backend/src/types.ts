@@ -18,6 +18,7 @@ export interface ResponseStructure {
 
 export interface ShipSearchPayload {
     name: string;
+    registry: string;
 }
 
 export interface StApiResponse {

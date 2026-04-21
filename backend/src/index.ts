@@ -22,38 +22,67 @@ const NewOrUpdatedShipSchema = z.object({
 
 const ShipSearchPayloadSchema = z.object({
     name: z.string(),
+    registry: z.string(),
 });
 
 const searchStApi = async (searchTerms: ShipSearchPayload): Promise<Ship[]> => {
-    const url = 'https://stapi.co/api/v2/rest/spacecraft/search';
-
-    const body = new URLSearchParams(
-        searchTerms as unknown as Record<string, string>,
+    const url = 'https://stapi.co/api/v2/rest/spacecraft/search?pageNumber=';
+    console.log(
+        `[${formatLocalTimestamp()}] Starting StAPI search for name="${searchTerms.name}" registry="${searchTerms.registry}"`,
     );
 
-    const rawResponse = await fetch(url, {
-        method: 'POST',
-        headers: {
-            accept: 'application/json',
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: body.toString(),
-    });
+    const results: Ship[] = [];
 
-    if (!rawResponse.ok) {
-        throw new Error(`StApi HTTP error: ${rawResponse.status}`);
+    for (let i = 0; true; i++) {
+        console.log(`[${formatLocalTimestamp()}] Fetching StAPI page ${i}`);
+
+        const body = new URLSearchParams({
+            ...searchTerms,
+        });
+
+        const rawResponse = await fetch(`${url}${i}`, {
+            method: 'POST',
+            headers: {
+                accept: 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: body.toString(),
+        });
+
+        if (!rawResponse.ok) {
+            console.error(
+                `[${formatLocalTimestamp()}] StAPI request failed on page ${i}: HTTP ${rawResponse.status}`,
+            );
+            throw new Error(`StApi HTTP error: ${rawResponse.status}`);
+        }
+
+        const response = (await rawResponse.json()) as StApiResponse;
+
+        results.push(
+            ...response.spacecrafts.map(
+                (spacecraft) =>
+                    ({
+                        shipName: spacecraft.name ?? 'unknown',
+                        registry: spacecraft.registry ?? 'unknown',
+                        shipClass:
+                            spacecraft.spacecraftClass?.name ?? 'unknown',
+                    }) as Ship,
+            ),
+        );
+
+        if (response.page.lastPage) {
+            console.log(
+                `[${formatLocalTimestamp()}] Reached final StAPI page ${i}`,
+            );
+            break;
+        }
     }
 
-    const response = (await rawResponse.json()) as StApiResponse;
-
-    return response.spacecrafts.map(
-        (spacecraft) =>
-            ({
-                shipName: spacecraft.name ?? 'unknown',
-                registry: spacecraft.registry ?? 'unknown',
-                shipClass: spacecraft.spacecraftClass?.name ?? 'unknown',
-            }) as Ship,
+    console.log(
+        `[${formatLocalTimestamp()}] Completed StAPI search with ${results.length} ships`,
     );
+
+    return results;
 };
 
 app.post(
