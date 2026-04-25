@@ -3,7 +3,7 @@ import ShipSearch from './ShipSearch';
 import ShipListItem from './ShipListItem';
 
 export interface Ship {
-    id?: number;
+    uid: string;
     shipName: string;
     registry: string;
     shipClass: string;
@@ -38,7 +38,7 @@ const App = () => {
         <div>
             <p>My ships:</p>
             {ships?.map((ship) => (
-                <ShipListItem key={ship.id} ship={ship} addable={false} />
+                <ShipListItem key={ship.uid} ship={ship} addable={false} />
             ))}
             <ShipSearch />
         </div>

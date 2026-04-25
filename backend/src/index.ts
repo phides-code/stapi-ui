@@ -15,6 +15,7 @@ app.use(express.json());
 const PORT = 8000;
 
 const NewOrUpdatedShipSchema = z.object({
+    uid: z.string(),
     shipName: z.string(),
     registry: z.string(),
     shipClass: z.string(),
@@ -62,6 +63,7 @@ const searchStApi = async (searchTerms: ShipSearchPayload): Promise<Ship[]> => {
             ...response.spacecrafts.map(
                 (spacecraft) =>
                     ({
+                        uid: spacecraft.uid,
                         shipName: spacecraft.name ?? 'unknown',
                         registry: spacecraft.registry ?? 'unknown',
                         shipClass:

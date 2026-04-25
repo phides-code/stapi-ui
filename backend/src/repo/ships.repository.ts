@@ -20,15 +20,12 @@ export const shipRepository = {
         const snake = mapToSnake(input);
 
         const stmt = db.prepare(`
-            INSERT INTO ships (ship_name, registry, ship_class)
-            VALUES (@ship_name, @registry, @ship_class)
+            INSERT INTO ships (uid, ship_name, registry, ship_class)
+            VALUES (@uid, @ship_name, @registry, @ship_class)
         `);
 
-        const result = stmt.run(snake);
+        stmt.run(snake);
 
-        return {
-            id: Number(result.lastInsertRowid),
-            ...input,
-        };
+        return input;
     },
 };

@@ -32,7 +32,7 @@ const ShipSearchResults = ({ searchResults }: ShipSearchResultsProps) => {
     return (
         <div>
             {ships?.map((ship) => (
-                <ShipListItem key={ship.id} ship={ship} addable={true} />
+                <ShipListItem key={ship.uid} ship={ship} addable={true} />
             ))}
         </div>
     );

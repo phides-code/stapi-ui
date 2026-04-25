@@ -1,11 +1,12 @@
 export interface Ship {
-    id?: number;
+    uid: string;
     shipName: string;
     registry: string;
     shipClass: string;
 }
 
 export interface NewOrUpdatedShip {
+    uid: string;
     shipName: string;
     registry: string;
     shipClass: string;
