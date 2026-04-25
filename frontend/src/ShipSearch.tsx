@@ -60,6 +60,8 @@ const ShipSearch = () => {
             name: '',
             registry: '',
         });
+
+        searchResults.reset();
     };
 
     const buttonsDisabled: boolean =

@@ -13,6 +13,22 @@ export const shipRepository = {
         return mapRowsToCamel<Ship>(rows);
     },
 
+    getByUid(uid: string): Ship {
+        console.log(
+            `[${formatLocalTimestamp()}] Fetching ship with uid ${uid}`,
+        );
+        const row = db
+            .prepare<
+                [string],
+                Record<string, any>
+            >('SELECT * FROM ships WHERE uid = ?')
+            .get(uid);
+        if (!row) {
+            throw new Error(`Ship not found: ${uid}`);
+        }
+        return mapRowsToCamel<Ship>([row])[0];
+    },
+
     create(input: NewOrUpdatedShip): Ship {
         console.log(
             `[${formatLocalTimestamp()}] Creating ship: ${input.shipName}`,
@@ -26,6 +42,22 @@ export const shipRepository = {
 
         stmt.run(snake);
 
+        return input;
+    },
+
+    delete(input: string): string {
+        console.log(`[${formatLocalTimestamp()}] Deleting ship: ${input}`);
+
+        const stmt = db.prepare(`
+            DELETE FROM ships
+            WHERE uid = ?    
+        `);
+
+        const result = stmt.run(input);
+
+        if (result.changes === 0) {
+            throw new Error(`Ship not found: ${input}`);
+        }
         return input;
     },
 };

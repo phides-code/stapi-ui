@@ -183,6 +183,52 @@ app.post(
     },
 );
 
+app.delete(
+    '/api/ships/:uid',
+    (req: Request<{ uid: string }>, res: Response<ResponseStructure>) => {
+        const { uid } = req.params;
+        console.log(
+            `[${formatLocalTimestamp()}] DELETE /api/ships/${uid} request received`,
+        );
+
+        if (uid === '') {
+            return res.status(400).json({
+                data: null,
+                error: 'invalid data',
+            });
+        }
+
+        try {
+            const ship = shipRepository.getByUid(uid); // throws if missing
+            shipRepository.delete(uid);
+
+            return res.status(200).json({
+                data: ship,
+                error: null,
+            });
+        } catch (err) {
+            if (
+                err instanceof Error &&
+                err.message.startsWith('Ship not found:')
+            ) {
+                return res.status(404).json({
+                    data: null,
+                    error: err.message,
+                });
+            }
+
+            console.error(
+                `[${formatLocalTimestamp()}] Failed to delete ship:`,
+                err,
+            );
+            return res.status(500).json({
+                data: null,
+                error: 'something went wrong',
+            });
+        }
+    },
+);
+
 app.listen(PORT, () => {
     console.log(
         `[${formatLocalTimestamp()}] Server running at http://localhost:${PORT}`,

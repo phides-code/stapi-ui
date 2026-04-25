@@ -6,21 +6,15 @@ interface ShipListItemProps {
     addable: boolean;
 }
 
-export interface AddShipResponse {
+export interface MutationResponse {
     data: Ship | null;
     error: string | null;
 }
 
 const ShipListItem = ({ ship, addable }: ShipListItemProps) => {
-    const addShip = (ev: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-        ev.preventDefault();
-
-        addedShip.mutate(ship);
-    };
-
     const queryClient = useQueryClient();
 
-    const addedShip = useMutation<AddShipResponse, Error, Ship>({
+    const addedShip = useMutation<MutationResponse, Error, Ship>({
         mutationFn: async (payload) => {
             const response = await fetch('/api/ships', {
                 method: 'POST',
@@ -34,20 +28,57 @@ const ShipListItem = ({ ship, addable }: ShipListItemProps) => {
 
             queryClient.invalidateQueries({ queryKey: ['ships'] });
 
-            return (await response.json()) as AddShipResponse;
+            return (await response.json()) as MutationResponse;
         },
     });
+
+    const removedShip = useMutation<MutationResponse, Error, string>({
+        mutationFn: async (uid) => {
+            const response = await fetch(`/api/ships/${uid}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status} ship search failed`);
+            }
+
+            queryClient.invalidateQueries({ queryKey: ['ships'] });
+
+            return (await response.json()) as MutationResponse;
+        },
+    });
+
+    const addShip = (ev: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        ev.preventDefault();
+
+        addedShip.mutate(ship);
+    };
+
+    const removeShip = (
+        ev: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    ) => {
+        ev.preventDefault();
+
+        removedShip.mutate(ship.uid);
+    };
 
     return (
         <div>
             <div>{`${ship.shipName} - ${ship.registry}`}</div>
             <div>{ship.shipClass}</div>
-            {addable && (
+            {addable ? (
                 <button
                     disabled={addedShip.isPending}
                     onClick={(ev) => addShip(ev)}
                 >
                     Add to my ships
+                </button>
+            ) : (
+                <button
+                    disabled={removedShip.isPending}
+                    onClick={(ev) => removeShip(ev)}
+                >
+                    Remove
                 </button>
             )}
             {addedShip.isError && <p>Something went wrong</p>}
