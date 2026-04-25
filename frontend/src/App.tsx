@@ -1,8 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
+import ShipSearch from './ShipSearch';
+import ShipListItem from './ShipListItem';
 
-interface Ship {
-    id: number;
+export interface Ship {
+    id?: number;
     shipName: string;
+    registry: string;
+    shipClass: string;
 }
 
 interface ShipsApiResponse {
@@ -13,7 +17,11 @@ interface ShipsApiResponse {
 const App = () => {
     const { data, isLoading, isError } = useQuery<ShipsApiResponse>({
         queryKey: ['ships'],
-        queryFn: () => fetch('/api/ships').then((res) => res.json()),
+        queryFn: async () => {
+            const res = await fetch('/api/ships');
+
+            return await res.json();
+        },
     });
 
     if (isLoading) return <div>Loading...</div>;
@@ -24,16 +32,15 @@ const App = () => {
         return <div>Error</div>;
     }
 
-    console.log('data:');
-    console.log(data);
-
     const ships = data?.data;
 
     return (
         <div>
+            <p>My ships:</p>
             {ships?.map((ship) => (
-                <div key={ship.id}>{ship.shipName}</div>
+                <ShipListItem key={ship.id} ship={ship} addable={false} />
             ))}
+            <ShipSearch />
         </div>
     );
 };
