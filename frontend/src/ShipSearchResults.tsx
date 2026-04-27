@@ -1,4 +1,4 @@
-import type { UseMutationResult } from '@tanstack/react-query';
+import { useQueryClient, type UseMutationResult } from '@tanstack/react-query';
 import type { ShipSearchPayload, ShipSearchResponse } from './ShipSearch';
 import type { Ship } from './App';
 import ShipListItem from './ShipListItem';
@@ -29,9 +29,20 @@ const ShipSearchResults = ({ searchResults }: ShipSearchResultsProps) => {
         return <div>No results</div>;
     }
 
+    const queryClient = useQueryClient();
+    const myShipsResponse = queryClient.getQueryData<{
+        data: Ship[];
+        error: string | null;
+    }>(['ships']);
+    const myShips = myShipsResponse?.data ?? [];
+    const myShipIds = new Set(myShips.map((s) => s.uid));
+    const filteredShips = (ships ?? []).filter(
+        (ship) => !myShipIds.has(ship.uid),
+    );
+
     return (
         <div>
-            {ships?.map((ship) => (
+            {filteredShips?.map((ship) => (
                 <ShipListItem key={ship.uid} ship={ship} addable={true} />
             ))}
         </div>
