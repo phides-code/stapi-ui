@@ -62,10 +62,26 @@ const ShipListItem = ({ ship, addable }: ShipListItemProps) => {
         removedShip.mutate(ship.uid);
     };
 
+    const classPrefix =
+        [
+            'ambassador',
+            'defiant',
+            'galaxy',
+            'intrepid',
+            'nebula',
+            'constitution',
+            'excelsior',
+            'miranda',
+            'sovereign',
+        ].find((c) => ship.shipClass.toLowerCase().includes(c)) ?? 'generic';
+
     return (
         <div>
             <div>{`${ship.shipName} - ${ship.registry}`}</div>
             <div>{ship.shipClass}</div>
+            <div>
+                <img height='100px' src={`${classPrefix}.png`} />
+            </div>
             {addable ? (
                 <button
                     disabled={addedShip.isPending}

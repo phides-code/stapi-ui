@@ -5,3 +5,5 @@ post-data.json
 *.db
 stapi-post.json
 stapi-post-params
+all-ships.json
+classes
