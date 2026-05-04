@@ -68,48 +68,68 @@ const ShipSearch = () => {
         shipSearchTerms.name === '' && shipSearchTerms.registry === '';
 
     return (
-        <div>
+        <div className="search-panel">
+            <h2 className="section-heading">
+                <span className="heading-accent"></span>
+                Search Starfleet Registry
+            </h2>
             <form onSubmit={handleSubmit}>
                 <fieldset disabled={searchResults.isPending}>
-                    <p>Search for a ship</p>
-                    <div>
-                        <label htmlFor='shipName'>Ship name:</label>
-                        <input
-                            type='text'
-                            id='shipName'
-                            name='shipName'
-                            value={shipSearchTerms.name}
-                            onChange={(e) => {
-                                handleChange(e, 'name');
-                            }}
-                        />
+                    <div className="search-form-grid">
+                        <div className="form-group">
+                            <label className="form-label" htmlFor='shipName'>
+                                Ship Name
+                            </label>
+                            <input
+                                className="form-input"
+                                type='text'
+                                id='shipName'
+                                name='shipName'
+                                placeholder='e.g. Enterprise'
+                                value={shipSearchTerms.name}
+                                onChange={(e) => {
+                                    handleChange(e, 'name');
+                                }}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label className="form-label" htmlFor='shipRegistry'>
+                                Registry
+                            </label>
+                            <input
+                                className="form-input"
+                                type='text'
+                                id='shipRegistry'
+                                name='shipRegistry'
+                                placeholder='e.g. NCC-1701'
+                                value={shipSearchTerms.registry}
+                                onChange={(e) => {
+                                    handleChange(e, 'registry');
+                                }}
+                            />
+                        </div>
                     </div>
-                    <div>
-                        <label htmlFor='shipRegistry'>Ship registry:</label>
-                        <input
-                            type='text'
-                            id='shipRegistry'
-                            name='shipRegistry'
-                            value={shipSearchTerms.registry}
-                            onChange={(e) => {
-                                handleChange(e, 'registry');
-                            }}
-                        />
+                    <div className="search-actions">
+                        <button
+                            className="btn btn-primary"
+                            type='submit'
+                            disabled={buttonsDisabled}
+                        >
+                            Search Ships
+                        </button>
+                        <button
+                            className="btn btn-secondary"
+                            type='reset'
+                            disabled={buttonsDisabled}
+                            onClick={handleReset}
+                        >
+                            Reset
+                        </button>
                     </div>
-                    <button type='submit' disabled={buttonsDisabled}>
-                        Search Ships
-                    </button>
-                    <button
-                        type='reset'
-                        disabled={buttonsDisabled}
-                        onClick={handleReset}
-                    >
-                        Reset
-                    </button>
                 </fieldset>
             </form>
 
-            <div>
+            <div className="search-results">
                 <ShipSearchResults searchResults={searchResults} />
             </div>
         </div>

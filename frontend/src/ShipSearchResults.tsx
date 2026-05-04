@@ -16,17 +16,29 @@ const ShipSearchResults = ({ searchResults }: ShipSearchResultsProps) => {
     const { data, isPending, isError } = searchResults;
 
     if (isError || data?.error) {
-        return <p>Something went wrong</p>;
+        return (
+            <p className="status-message status-error">
+                ⚠ Sensor array malfunction — search failed
+            </p>
+        );
     }
 
     if (isPending) {
-        return <p>...</p>;
+        return (
+            <p className="status-message status-loading">
+                Scanning subspace frequencies...
+            </p>
+        );
     }
 
     const ships = data?.data as Ship[];
 
     if (ships?.length === 0) {
-        return <div>No results</div>;
+        return (
+            <p className="status-message status-empty">
+                No vessels found matching query parameters
+            </p>
+        );
     }
 
     const queryClient = useQueryClient();
@@ -42,9 +54,16 @@ const ShipSearchResults = ({ searchResults }: ShipSearchResultsProps) => {
 
     return (
         <div>
-            {filteredShips?.map((ship) => (
-                <ShipListItem key={ship.uid} ship={ship} addable={true} />
-            ))}
+            <div className="search-results-divider"></div>
+            <h3 className="section-heading">
+                <span className="heading-accent"></span>
+                Search Results
+            </h3>
+            <div className="ship-list">
+                {filteredShips?.map((ship) => (
+                    <ShipListItem key={ship.uid} ship={ship} addable={true} />
+                ))}
+            </div>
         </div>
     );
 };

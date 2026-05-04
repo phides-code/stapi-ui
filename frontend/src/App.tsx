@@ -24,22 +24,54 @@ const App = () => {
         },
     });
 
-    if (isLoading) return <div>Loading...</div>;
+    if (isLoading)
+        return (
+            <div className="app-container">
+                <header className="app-header">
+                    <h1 className="app-title">STAPI</h1>
+                    <p className="app-subtitle">Starship Database Interface</p>
+                </header>
+                <p className="status-message status-loading">
+                    Accessing Starfleet Database...
+                </p>
+            </div>
+        );
     if (isError) {
         if (data?.error) {
             console.log('error: ' + data.error);
         }
-        return <div>Error</div>;
+        return (
+            <div className="app-container">
+                <header className="app-header">
+                    <h1 className="app-title">STAPI</h1>
+                    <p className="app-subtitle">Starship Database Interface</p>
+                </header>
+                <p className="status-message status-error">
+                    ⚠ Communications failure — unable to reach Starfleet Command
+                </p>
+            </div>
+        );
     }
 
     const ships = data?.data;
 
     return (
-        <div>
-            <p>My ships:</p>
-            {ships?.map((ship) => (
-                <ShipListItem key={ship.uid} ship={ship} addable={false} />
-            ))}
+        <div className="app-container">
+            <header className="app-header">
+                <h1 className="app-title">STAPI</h1>
+                <p className="app-subtitle">Starship Database Interface</p>
+            </header>
+
+            <h2 className="section-heading">
+                <span className="heading-accent"></span>
+                My Ships
+            </h2>
+            <div className="ship-list">
+                {ships?.map((ship) => (
+                    <ShipListItem key={ship.uid} ship={ship} addable={false} />
+                ))}
+            </div>
+
             <ShipSearch />
         </div>
     );

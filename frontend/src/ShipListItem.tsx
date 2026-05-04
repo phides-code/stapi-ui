@@ -76,29 +76,37 @@ const ShipListItem = ({ ship, addable }: ShipListItemProps) => {
         ].find((c) => ship.shipClass.toLowerCase().includes(c)) ?? 'generic';
 
     return (
-        <div>
-            <div>{`${ship.shipName} - ${ship.registry}`}</div>
-            <div>{ship.shipClass}</div>
-            <div>
-                <img height='100px' src={`${classPrefix}.png`} />
+        <div className="ship-card">
+            <div className="ship-card-image">
+                <img src={`${classPrefix}.png`} alt={ship.shipClass} />
             </div>
-            {addable ? (
-                <button
-                    disabled={addedShip.isPending}
-                    onClick={(ev) => addShip(ev)}
-                >
-                    Add to my ships
-                </button>
-            ) : (
-                <button
-                    disabled={removedShip.isPending}
-                    onClick={(ev) => removeShip(ev)}
-                >
-                    Remove
-                </button>
+            <div className="ship-card-info">
+                <div className="ship-name">{ship.shipName}</div>
+                <div className="ship-registry">{ship.registry}</div>
+                <div className="ship-class">{ship.shipClass}</div>
+            </div>
+            <div className="ship-card-actions">
+                {addable ? (
+                    <button
+                        className="btn btn-add"
+                        disabled={addedShip.isPending}
+                        onClick={(ev) => addShip(ev)}
+                    >
+                        Add to Fleet
+                    </button>
+                ) : (
+                    <button
+                        className="btn btn-danger"
+                        disabled={removedShip.isPending}
+                        onClick={(ev) => removeShip(ev)}
+                    >
+                        Remove
+                    </button>
+                )}
+            </div>
+            {addedShip.isError && (
+                <p className="inline-error">⚠ Failed to add vessel</p>
             )}
-            {addedShip.isError && <p>Something went wrong</p>}
-            <div>---</div>
         </div>
     );
 };
